@@ -1,6 +1,6 @@
 <div align="center">
   <div align="center">
-    <img src="https://github.com/RapidAI/RapidOCRAPI/releases/download/v0.1.5/LOGO.png"/>
+    <img src="https://github.com/RapidAI/RapidOCRWeb/releases/download/v0.0.0/RapidOCRWeb_LOGO.png"/>
   </div>
  <br/>
   <a href=""><img src="https://img.shields.io/badge/Python->=3.6-aff.svg"></a>
