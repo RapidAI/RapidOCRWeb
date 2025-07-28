@@ -8,7 +8,7 @@ on:
 
 env:
   package_name: RapidOCRWeb
-  rapidocr_web_dir: ocrweb/rapidocr_web/
+  rapidocr_web_dir: rapidocr_web/
 
 jobs:
   create_release:
@@ -97,7 +97,7 @@ jobs:
     needs: create_release
     strategy:
         matrix:
-            os: ['ubuntu-20.04', 'ubuntu-22.04', 'macos-13', 'macos-12', 'macos-11']
+            os: ['ubuntu-20.04', 'ubuntu-22.04', 'macos-13', 'macos-15']
 
     steps:
       - name: Pull latest code
