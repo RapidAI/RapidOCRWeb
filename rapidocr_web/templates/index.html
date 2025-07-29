@@ -69,6 +69,9 @@
                         </div>
                         <div class="image-container">
                             <img id="detect_img" src="" alt="检测结果"/>
+                            <div class="zoom-hint">
+                                <i class="fas fa-search-plus"></i> 点击或滚轮缩放，拖拽移动图片
+                            </div>
                             <div class="image-info" id="imageInfo" style="display: none;">
                                 <span class="image-dimensions"></span>
                                 <span class="image-size"></span>
@@ -98,62 +101,31 @@
                         </div>
                         <div class="performance-stats" id="statsContainer" style="display: none;">
                             <div class="stats-header">
-                                <i class="fas fa-chart-line"></i>
-                                <span>性能统计</span>
+                                <div class="stats-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>性能统计</span>
+                                </div>
+                                <div class="total-performance">
+                                    <span id="totalTime">0.000s</span>
+                                </div>
                             </div>
                             <div class="stats-grid">
                                 <div class="stat-card detection">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-search"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="stat-label">文本检测</div>
-                                        <div class="stat-value" id="detTime">0.000s</div>
-                                        <div class="stat-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" id="detProgress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="stat-label">文本检测</div>
+                                    <div class="stat-value" id="detTime">0.000s</div>
                                 </div>
 
                                 <div class="stat-card classification">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-tags"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="stat-label">文本分类</div>
-                                        <div class="stat-value" id="clsTime">0.000s</div>
-                                        <div class="stat-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" id="clsProgress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="stat-label">文本分类</div>
+                                    <div class="stat-value" id="clsTime">0.000s</div>
                                 </div>
 
                                 <div class="stat-card recognition">
-                                    <div class="stat-content">
-                                        <div class="stat-label">文字识别</div>
-                                        <div class="stat-value" id="recTime">0.000s</div>
-                                        <div class="stat-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" id="recProgress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="stat-label">文字识别</div>
+                                    <div class="stat-value" id="recTime">0.000s</div>
                                 </div>
                             </div>
-
-                            <div class="total-performance">
-                                <div class="total-label">总耗时</div>
-                                <div class="total-value" id="totalTime">0.000s</div>
-                                <div class="performance-indicator" id="performanceIndicator">
-                                    <i class="fas fa-bolt"></i>
-                                    <span>极速</span>
-                                </div>
-                            </div>
-                        </div>
+                                   </div>
                     </div>
                 </div>
             </div>
@@ -287,6 +259,10 @@
                             if (typeof adjustImageSizeAdaptive === 'function') {
                                 adjustImageSizeAdaptive(this);
                             }
+                            // 重新初始化缩放功能
+                            if (typeof addImageZoom === 'function') {
+                                addImageZoom();
+                            }
                         });
 
                         // 重置标题
@@ -314,6 +290,10 @@
                                 $("#detect_img").on('load', function() {
                                     if (typeof adjustImageSizeAdaptive === 'function') {
                                         adjustImageSizeAdaptive(this);
+                                    }
+                                    // 重新初始化缩放功能
+                                    if (typeof addImageZoom === 'function') {
+                                        addImageZoom();
                                     }
                                 });
                             }
@@ -448,73 +428,20 @@
             $("#recTime").text(recTime.toFixed(3) + 's');
             $("#totalTime").text(totalTime.toFixed(3) + 's');
 
-            // 计算进度条比例
-            const maxTime = Math.max(detTime, clsTime, recTime);
-            if (maxTime > 0) {
-                const detProgress = (detTime / maxTime) * 100;
-                const clsProgress = (clsTime / maxTime) * 100;
-                const recProgress = (recTime / maxTime) * 100;
 
-                // 动画更新进度条
-                animateProgressBar("#detProgress", detProgress);
-                animateProgressBar("#clsProgress", clsProgress);
-                animateProgressBar("#recProgress", recProgress);
-            }
-
-            // 更新性能指示器
-            updatePerformanceIndicator(totalTime);
 
             // 显示统计容器
             $("#statsContainer").show();
 
-            // 添加显示动画，稍微延迟以突出表格优先显示
+            // 添加显示动画
             $("#statsContainer").css('opacity', '0').css('transform', 'translateY(20px)');
             setTimeout(() => {
-                $("#statsContainer").css('transition', 'opacity 0.5s ease, transform 0.5s ease')
+                $("#statsContainer").css('transition', 'opacity 0.6s ease, transform 0.6s ease')
                                   .css('opacity', '1').css('transform', 'translateY(0)');
-            }, 300);
-        }
-
-        // 动画更新进度条
-        function animateProgressBar(selector, percentage) {
-            const progressBar = $(selector);
-            progressBar.css('width', '0%');
-            setTimeout(() => {
-                progressBar.css('transition', 'width 0.8s ease-out').css('width', percentage + '%');
             }, 200);
         }
 
-                // 更新性能指示器
-        function updatePerformanceIndicator(totalTime) {
-            const indicator = $("#performanceIndicator");
-            let performanceLevel, icon, text, color;
 
-            if (totalTime < 0.5) {
-                performanceLevel = 'ultra-fast';
-                icon = 'fas fa-rocket';
-                text = '超快';
-                color = '#27ae60';
-            } else if (totalTime < 1.0) {
-                performanceLevel = 'fast';
-                icon = 'fas fa-bolt';
-                text = '极速';
-                color = '#2ecc71';
-            } else if (totalTime < 2.0) {
-                performanceLevel = 'normal';
-                icon = 'fas fa-tachometer-alt';
-                text = '正常';
-                color = '#f39c12';
-            } else {
-                performanceLevel = 'slow';
-                icon = 'fas fa-clock';
-                text = '较慢';
-                color = '#e74c3c';
-            }
-
-            indicator.html(`<i class="${icon}"></i><span>${text}</span>`);
-            indicator.css('color', color);
-            indicator.attr('class', `performance-indicator ${performanceLevel}`);
-        }
 
                 // 复制所有识别结果
         function copyAllResults() {

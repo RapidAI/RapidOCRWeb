@@ -182,49 +182,165 @@ function addImageZoom() {
     const img = document.getElementById('detect_img');
 
     if (imageContainer && img) {
-        imageContainer.style.cursor = 'zoom-in';
+        console.log('初始化图片缩放功能');
+
+        let isZoomed = false;
+        let currentScale = 1;
+        let translateX = 0, translateY = 0;
 
         // 点击缩放
         imageContainer.addEventListener('click', function(e) {
+            console.log('点击事件触发');
             e.preventDefault();
-            if (img.classList.contains('zoomed')) {
-                img.classList.remove('zoomed');
-                imageContainer.style.cursor = 'zoom-in';
-                img.style.transform = 'scale(1)';
+            e.stopPropagation();
+
+            if (isZoomed) {
+                console.log('退出缩放');
+                resetZoom();
             } else {
-                img.classList.add('zoomed');
-                imageContainer.style.cursor = 'zoom-out';
-                img.style.transform = 'scale(1.5)';
+                console.log('进入缩放');
+                enterZoom(e);
             }
         });
 
         // 鼠标滚轮缩放
         imageContainer.addEventListener('wheel', function(e) {
+            console.log('滚轮事件触发');
             e.preventDefault();
-            const currentScale = parseFloat(img.style.transform.replace('scale(', '').replace(')', '')) || 1;
+            e.stopPropagation();
+
+            if (!isZoomed) {
+                enterZoom(e);
+            }
+
             const delta = e.deltaY > 0 ? 0.9 : 1.1;
             const newScale = Math.max(0.5, Math.min(3, currentScale * delta));
 
-            img.style.transform = `scale(${newScale})`;
+            // 计算鼠标位置相对于图片的偏移
+            const rect = img.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
 
-            // 更新缩放状态
-            if (newScale > 1.2) {
-                img.classList.add('zoomed');
-                imageContainer.style.cursor = 'zoom-out';
-            } else {
-                img.classList.remove('zoomed');
-                imageContainer.style.cursor = 'zoom-in';
-            }
+            // 计算新的变换原点
+            const scaleDiff = newScale - currentScale;
+            translateX -= (mouseX * scaleDiff) / currentScale;
+            translateY -= (mouseY * scaleDiff) / currentScale;
+
+            currentScale = newScale;
+            updateTransform();
         });
 
         // ESC键退出缩放
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && img.classList.contains('zoomed')) {
-                img.classList.remove('zoomed');
-                imageContainer.style.cursor = 'zoom-in';
-                img.style.transform = 'scale(1)';
+            if (e.key === 'Escape' && isZoomed) {
+                resetZoom();
             }
         });
+
+        // 双击重置缩放
+        imageContainer.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+            resetZoom();
+        });
+
+        // 拖拽移动功能
+        let isDragging = false;
+        let lastMouseX = 0, lastMouseY = 0;
+
+        imageContainer.addEventListener('mousedown', function(e) {
+            if (isZoomed) {
+                e.preventDefault();
+                isDragging = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                imageContainer.style.cursor = 'grabbing';
+            }
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging && isZoomed) {
+                e.preventDefault();
+
+                const deltaX = e.clientX - lastMouseX;
+                const deltaY = e.clientY - lastMouseY;
+
+                translateX += deltaX;
+                translateY += deltaY;
+
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+
+                updateTransform();
+            }
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            if (isDragging) {
+                isDragging = false;
+                imageContainer.style.cursor = 'zoom-out';
+            }
+        });
+
+        function enterZoom(e) {
+            console.log('进入缩放模式');
+            isZoomed = true;
+            currentScale = 2;
+            imageContainer.style.cursor = 'zoom-out';
+
+            // 隐藏缩放提示
+            const zoomHint = imageContainer.querySelector('.zoom-hint');
+            if (zoomHint) {
+                zoomHint.style.opacity = '0';
+            }
+
+            // 计算鼠标位置作为缩放中心
+            if (e) {
+                const rect = img.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                translateX = -mouseX * (currentScale - 1);
+                translateY = -mouseY * (currentScale - 1);
+            }
+
+            updateTransform();
+        }
+
+        function resetZoom() {
+            console.log('重置缩放');
+            isZoomed = false;
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            imageContainer.style.cursor = 'zoom-in';
+
+            // 显示缩放提示
+            const zoomHint = imageContainer.querySelector('.zoom-hint');
+            if (zoomHint) {
+                zoomHint.style.opacity = '1';
+            }
+
+            updateTransform();
+        }
+
+        function updateTransform() {
+            console.log('更新变换:', {
+                scale: currentScale,
+                translateX: translateX,
+                translateY: translateY,
+                isZoomed: isZoomed
+            });
+
+            if (isZoomed) {
+                img.style.transform = `scale(${currentScale}) translate(${translateX}px, ${translateY}px)`;
+                img.classList.add('zoomed');
+            } else {
+                img.style.transform = 'scale(1) translate(0px, 0px)';
+                img.classList.remove('zoomed');
+            }
+        }
+    } else {
+        console.log('图片容器或图片元素未找到');
     }
 }
 
@@ -347,5 +463,9 @@ function adjustImageSizeAdaptive(img) {
     console.log('图片自适应调整完成');
 }
 
-// 确保函数在全局作用域中可用
-window.adjustImageSizeAdaptive = adjustImageSizeAdaptive;
+        // 确保函数在全局作用域中可用
+    window.adjustImageSizeAdaptive = adjustImageSizeAdaptive;
+    window.addImageZoom = addImageZoom;
+
+    // 初始化图片缩放功能
+    addImageZoom();
