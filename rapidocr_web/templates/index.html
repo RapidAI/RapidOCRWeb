@@ -284,7 +284,9 @@
 
                         // 添加图片加载完成后的处理
                         $("#detect_img").on('load', function() {
-                            adjustImageSize(this);
+                            if (typeof adjustImageSizeAdaptive === 'function') {
+                                adjustImageSizeAdaptive(this);
+                            }
                         });
 
                         // 重置标题
@@ -310,7 +312,9 @@
 
                                 // 添加图片加载完成后的处理
                                 $("#detect_img").on('load', function() {
-                                    adjustImageSize(this);
+                                    if (typeof adjustImageSizeAdaptive === 'function') {
+                                        adjustImageSizeAdaptive(this);
+                                    }
                                 });
                             }
 
@@ -385,38 +389,26 @@
             reader.readAsDataURL(targetFile)
         }
 
-                        // 调整图像尺寸，保持宽高比
+                        // 调整图像尺寸，保持宽高比 - 使用新的自适应函数
         function adjustImageSize(imgElement) {
-            const container = imgElement.parentElement;
-            const containerWidth = container.clientWidth - 40; // 减去padding
-            const containerHeight = 500; // 最大高度
-
-            const imgWidth = imgElement.naturalWidth;
-            const imgHeight = imgElement.naturalHeight;
-
-            // 计算缩放比例
-            const scaleX = containerWidth / imgWidth;
-            const scaleY = containerHeight / imgHeight;
-            const scale = Math.min(scaleX, scaleY, 1); // 不放大，只缩小
-
-            // 设置新的尺寸
-            const newWidth = imgWidth * scale;
-            const newHeight = imgHeight * scale;
-
-            imgElement.style.width = newWidth + 'px';
-            imgElement.style.height = newHeight + 'px';
-
-            // 显示图片信息
-            showImageInfo(imgElement);
-
-            // 添加加载完成动画
-            imgElement.style.opacity = '0';
-            imgElement.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                imgElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                imgElement.style.opacity = '1';
-                imgElement.style.transform = 'scale(1)';
-            }, 50);
+            if (typeof adjustImageSizeAdaptive === 'function') {
+                adjustImageSizeAdaptive(imgElement);
+            } else {
+                // 降级方案
+                const container = imgElement.parentElement;
+                const containerWidth = container.clientWidth - 40;
+                const containerHeight = 500;
+                const imgWidth = imgElement.naturalWidth;
+                const imgHeight = imgElement.naturalHeight;
+                const scaleX = containerWidth / imgWidth;
+                const scaleY = containerHeight / imgHeight;
+                const scale = Math.min(scaleX, scaleY, 1);
+                const newWidth = imgWidth * scale;
+                const newHeight = imgHeight * scale;
+                imgElement.style.width = newWidth + 'px';
+                imgElement.style.height = newHeight + 'px';
+                showImageInfo(imgElement);
+            }
         }
 
                 // 显示图片信息

@@ -95,9 +95,7 @@ function showImagePreview(file) {
 
             // 添加图片加载完成后的处理
             img.onload = function() {
-                if (typeof adjustImageSize === 'function') {
-                    adjustImageSize(this);
-                }
+                adjustImageSizeAdaptive(this);
             };
 
             // 添加淡入动画
@@ -186,23 +184,46 @@ function addImageZoom() {
     if (imageContainer && img) {
         imageContainer.style.cursor = 'zoom-in';
 
-        imageContainer.addEventListener('click', function() {
-            if (img.style.transform === 'scale(1.5)') {
-                img.style.transform = 'scale(1)';
+        // 点击缩放
+        imageContainer.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (img.classList.contains('zoomed')) {
+                img.classList.remove('zoomed');
                 imageContainer.style.cursor = 'zoom-in';
+                img.style.transform = 'scale(1)';
             } else {
-                img.style.transform = 'scale(1.5)';
+                img.classList.add('zoomed');
                 imageContainer.style.cursor = 'zoom-out';
+                img.style.transform = 'scale(1.5)';
             }
         });
 
-        // 添加鼠标滚轮缩放
+        // 鼠标滚轮缩放
         imageContainer.addEventListener('wheel', function(e) {
             e.preventDefault();
             const currentScale = parseFloat(img.style.transform.replace('scale(', '').replace(')', '')) || 1;
             const delta = e.deltaY > 0 ? 0.9 : 1.1;
             const newScale = Math.max(0.5, Math.min(3, currentScale * delta));
+
             img.style.transform = `scale(${newScale})`;
+
+            // 更新缩放状态
+            if (newScale > 1.2) {
+                img.classList.add('zoomed');
+                imageContainer.style.cursor = 'zoom-out';
+            } else {
+                img.classList.remove('zoomed');
+                imageContainer.style.cursor = 'zoom-in';
+            }
+        });
+
+        // ESC键退出缩放
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && img.classList.contains('zoomed')) {
+                img.classList.remove('zoomed');
+                imageContainer.style.cursor = 'zoom-in';
+                img.style.transform = 'scale(1)';
+            }
         });
     }
 }
@@ -260,3 +281,71 @@ function initEnhancedFeatures() {
 window.addEventListener('load', function() {
     initEnhancedFeatures();
 });
+
+// 窗口大小变化时重新调整图片尺寸
+window.addEventListener('resize', function() {
+    const img = document.getElementById('detect_img');
+    if (img && img.src && img.complete) {
+        adjustImageSizeAdaptive(img);
+    }
+});
+
+// 自适应图片尺寸调整
+function adjustImageSizeAdaptive(img) {
+    console.log('adjustImageSizeAdaptive 被调用');
+
+    const container = img.parentElement;
+    if (!container) {
+        console.log('容器未找到');
+        return;
+    }
+
+    // 等待图片完全加载
+    if (!img.complete || !img.naturalWidth) {
+        console.log('图片未完全加载，等待...');
+        setTimeout(() => adjustImageSizeAdaptive(img), 100);
+        return;
+    }
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    const imgWidth = img.naturalWidth;
+    const imgHeight = img.naturalHeight;
+
+    console.log('容器尺寸:', containerWidth, 'x', containerHeight);
+    console.log('图片原始尺寸:', imgWidth, 'x', imgHeight);
+
+    // 计算最佳显示尺寸
+    const containerRatio = containerWidth / containerHeight;
+    const imgRatio = imgWidth / imgHeight;
+
+    let newWidth, newHeight;
+
+    if (imgRatio > containerRatio) {
+        // 图片更宽，以宽度为准
+        newWidth = Math.min(containerWidth * 0.9, imgWidth);
+        newHeight = (newWidth / imgWidth) * imgHeight;
+    } else {
+        // 图片更高，以高度为准
+        newHeight = Math.min(containerHeight * 0.9, imgHeight);
+        newWidth = (newHeight / imgHeight) * imgWidth;
+    }
+
+    console.log('计算的新尺寸:', newWidth, 'x', newHeight);
+
+    // 设置图片尺寸
+    img.style.width = newWidth + 'px';
+    img.style.height = newHeight + 'px';
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '100%';
+    img.style.objectFit = 'contain';
+
+    // 更新容器高度
+    const minContainerHeight = Math.max(200, newHeight + 40);
+    container.style.minHeight = minContainerHeight + 'px';
+
+    console.log('图片自适应调整完成');
+}
+
+// 确保函数在全局作用域中可用
+window.adjustImageSizeAdaptive = adjustImageSizeAdaptive;

@@ -436,7 +436,8 @@ body::before {
 /* 图片容器 */
 .image-container {
     width: 100%;
-    min-height: 300px;
+    min-height: 200px;
+    max-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -450,6 +451,7 @@ body::before {
     box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
 .image-container::before {
@@ -466,17 +468,33 @@ body::before {
 
 .image-container img {
     max-width: 100%;
-    max-height: 500px;
+    max-height: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    cursor: zoom-in;
+    display: block;
+    margin: 0 auto;
 }
 
 .image-container img:hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 图片缩放状态 */
+.image-container img.zoomed {
+    transform: scale(1.5);
+    cursor: zoom-out;
+    z-index: 1000;
+    position: relative;
+}
+
+.image-container img.zoomed:hover {
+    transform: scale(1.5);
 }
 
 /* 图片加载状态 */
@@ -978,11 +996,13 @@ body::before {
 
     /* 移动端图片显示优化 */
     .image-container {
-        min-height: 200px;
+        min-height: 150px;
+        max-height: 60vh;
     }
 
     .image-container img {
-        max-height: 300px;
+        max-height: 100%;
+        max-width: 100%;
     }
 
     /* 移动端性能统计优化 */
