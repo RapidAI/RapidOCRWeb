@@ -239,30 +239,13 @@ body {
     position: relative;
 }
 
-/* 图片容器样式 */
-.image-container {
-    width: 100%;
-    min-height: 400px;
-    max-height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 15px;
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.image-container img {
+/* 图片样式 */
+#detect_img {
     max-width: 100%;
-    max-height: 100%;
+    max-height: 90vh;
     width: auto;
     height: auto;
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
     cursor: zoom-in;
     display: block;
@@ -274,17 +257,19 @@ body {
     -ms-user-select: none;
 }
 
-.image-container img.zoomed {
+
+
+#detect_img.zoomed {
     cursor: grab;
     z-index: 1000;
     position: relative;
 }
 
-.image-container img.zoomed:hover {
+#detect_img.zoomed:hover {
     cursor: grab;
 }
 
-.image-container img.zoomed:active {
+#detect_img.zoomed:active {
     cursor: grabbing;
 }
 
@@ -313,9 +298,10 @@ body {
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
+    z-index: 100;
 }
 
-.image-container:hover .zoom-hint {
+.panel-content:hover .zoom-hint {
     opacity: 1;
 }
 
@@ -622,14 +608,8 @@ body {
         align-self: flex-end;
     }
 
-    .image-container {
-        min-height: 350px;
+    #detect_img {
         max-height: 75vh;
-    }
-
-    .image-container img {
-        max-height: 100%;
-        max-width: 100%;
     }
 
     .header-links {
@@ -694,8 +674,7 @@ body {
         padding: 15px;
     }
 
-    .image-container {
-        min-height: 300px;
+    #detect_img {
         max-height: 70vh;
     }
 

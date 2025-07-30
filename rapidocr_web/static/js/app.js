@@ -178,10 +178,9 @@ function createStatsChart(detTime, clsTime, recTime) {
 
 // 添加图片缩放功能
 function addImageZoom() {
-    const imageContainer = document.querySelector('.image-container');
     const img = document.getElementById('detect_img');
 
-    if (imageContainer && img) {
+    if (img) {
         console.log('初始化图片缩放功能');
 
         let isZoomed = false;
@@ -189,7 +188,7 @@ function addImageZoom() {
         let translateX = 0, translateY = 0;
 
         // 点击缩放
-        imageContainer.addEventListener('click', function(e) {
+        img.addEventListener('click', function(e) {
             console.log('点击事件触发');
             e.preventDefault();
             e.stopPropagation();
@@ -204,7 +203,7 @@ function addImageZoom() {
         });
 
         // 鼠标滚轮缩放
-        imageContainer.addEventListener('wheel', function(e) {
+        img.addEventListener('wheel', function(e) {
             console.log('滚轮事件触发');
             e.preventDefault();
             e.stopPropagation();
@@ -238,7 +237,7 @@ function addImageZoom() {
         });
 
         // 双击重置缩放
-        imageContainer.addEventListener('dblclick', function(e) {
+        img.addEventListener('dblclick', function(e) {
             e.preventDefault();
             resetZoom();
         });
@@ -247,7 +246,7 @@ function addImageZoom() {
         let isDragging = false;
         let lastMouseX = 0, lastMouseY = 0;
 
-        imageContainer.addEventListener('mousedown', function(e) {
+        img.addEventListener('mousedown', function(e) {
             if (isZoomed) {
                 e.preventDefault();
                 isDragging = true;
@@ -277,7 +276,7 @@ function addImageZoom() {
         document.addEventListener('mouseup', function(e) {
             if (isDragging) {
                 isDragging = false;
-                imageContainer.style.cursor = 'zoom-out';
+                img.style.cursor = 'zoom-out';
             }
         });
 
@@ -285,10 +284,10 @@ function addImageZoom() {
             console.log('进入缩放模式');
             isZoomed = true;
             currentScale = 2;
-            imageContainer.style.cursor = 'zoom-out';
+            img.style.cursor = 'zoom-out';
 
             // 隐藏缩放提示
-            const zoomHint = imageContainer.querySelector('.zoom-hint');
+            const zoomHint = document.querySelector('.zoom-hint');
             if (zoomHint) {
                 zoomHint.style.opacity = '0';
             }
@@ -312,10 +311,10 @@ function addImageZoom() {
             currentScale = 1;
             translateX = 0;
             translateY = 0;
-            imageContainer.style.cursor = 'zoom-in';
+            img.style.cursor = 'zoom-in';
 
             // 显示缩放提示
-            const zoomHint = imageContainer.querySelector('.zoom-hint');
+            const zoomHint = document.querySelector('.zoom-hint');
             if (zoomHint) {
                 zoomHint.style.opacity = '1';
             }
