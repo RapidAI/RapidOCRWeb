@@ -15,15 +15,14 @@
 
 ### 📖 简介
 
-该库是`rapidocr_onnxruntime`的web版本，依赖最新版本的[`rapidocr_onnxruntime`](../rapidocr/rapidocr_onnxruntime.md)库。
+`rapidocr_web`是基于`rapidocr`库封装的web版OCR程序。它可以让小伙们快速在本地启动OCR服务，支持剪贴板、拖拽和选择图像文件上传识别，同时具有一键复制识别文本功能。
 
-如果想要离线部署，可以先手动下载[`rapidocr_onnxruntime`](https://pypi.org/project/rapidocr-onnxruntime/#files) whl包，再手动安装[`rapidocr_web`](https://pypi.org/project/rapidocr-web/#files) whl包来使用。
+整体项目采用前后端分离设计：
 
-网页上显示的推理时间具体解释如下：
+- 前端：HTML + CSS + JavaScript
+- 后端：Flask
 
-<div align="center">
-    <img src="https://raw.githubusercontent.com/RapidAI/RapidOCR/ae529c2ba79e6cbf04c54caf2d24feb75e947ca4/assets/ocrweb_time.jpg" width="80%" height="80%">
-</div>
+UI来自Cursor，自适应移动端和PC端。相比于旧有版本（v0.x），现在版本（v1.x）更加现代化。
 
 ### 🛠️ 安装
 

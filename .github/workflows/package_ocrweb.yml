@@ -53,7 +53,7 @@ jobs:
 
       - name: Install environments
         run: |
-          pip3 install Pillow pyinstaller Flask>=2.1.0 rapidocr_onnxruntime>=1.2.8 get_pypi_latest_version
+          pip3 install Pillow pyinstaller Flask>=2.1.0 rapidocr get_pypi_latest_version
 
       - name: Run pyinstaller
         id: run_pyinstaller
@@ -70,7 +70,7 @@ jobs:
         shell: bash
         env:
             ZIP_WIN_NAME: ${{ env.package_name }}-${{ steps.run_pyinstaller.outputs.VERSION }}-${{ matrix.os }}-${{ runner.arch }}-no-installer.zip
-            Win_DIST_DIR: ${{ github.workspace }}\ocrweb\rapidocr_web\dist
+            Win_DIST_DIR: ${{ github.workspace }}\rapidocr_web\dist
         run: |
           echo "ZIP_NAME=$ZIP_WIN_NAME" >> $GITHUB_OUTPUT
           echo "Win_PACKAGE_DIR=$Win_DIST_DIR\${{ env.package_name }}" >> $GITHUB_OUTPUT
@@ -114,13 +114,13 @@ jobs:
 
       - name: Install environments
         run: |
-          pip3 install Pillow pyinstaller Flask>=2.1.0 rapidocr_onnxruntime>=1.2.8 get_pypi_latest_version
+          pip3 install Pillow pyinstaller Flask>=2.1.0 rapidocr get_pypi_latest_version
 
       - name: Run pyinstaller
         id: run_pyinstaller
         shell: bash
         run: |
-          cd ocrweb/rapidocr_web/
+          cd rapidocr_web/
           pyinstaller ocrweb.spec
           cp -r static templates dist/${{ env.package_name }}
           rm dist/${{ env.package_name }}/cv2/opencv_videoio_ffmpe*.dll || echo "未找到opencv_videoio_ffmpeg"
@@ -130,7 +130,7 @@ jobs:
         id: concat_file_path
         env:
             ZIP_NAME: ${{ env.package_name }}-${{ steps.run_pyinstaller.outputs.VERSION }}-${{ matrix.os }}-${{ runner.arch }}-no-installer.zip
-            Linux_DIST_DIR: ${{ github.workspace }}/ocrweb/rapidocr_web/dist
+            Linux_DIST_DIR: ${{ github.workspace }}/rapidocr_web/dist
         run: |
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_OUTPUT
           echo "Linux_PACKAGE_DIR=$Linux_DIST_DIR/${{ env.package_name }}" >> $GITHUB_OUTPUT
