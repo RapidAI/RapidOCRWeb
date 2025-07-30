@@ -4,29 +4,33 @@
 import base64
 import copy
 import json
-from collections import namedtuple
-from functools import reduce
-from typing import List, Tuple, Union
+from dataclasses import asdict, dataclass
+from typing import Optional
 
 import cv2
 import numpy as np
-from rapidocr_onnxruntime import RapidOCR
+from rapidocr import RapidOCR
+
+
+@dataclass
+class OCRWebOutput:
+    image: str
+    total_elapse: str
+    elapse_part: str
+    rec_res: str
 
 
 class OCRWebUtils:
     def __init__(self) -> None:
         self.ocr = RapidOCR()
-        self.WebReturn = namedtuple(
-            "WebReturn",
-            ["image", "total_elapse", "elapse_part", "rec_res", "det_boxes"],
-        )
 
-    def __call__(self, img_content: str) -> namedtuple:
+    def __call__(self, img_content: Optional[str]) -> str:
         if img_content is None:
             raise ValueError("img is None")
+
         img = self.prepare_img(img_content)
-        ocr_res, elapse = self.ocr(img)
-        return self.get_web_result(img, ocr_res, elapse)
+
+        return self.get_ocr_res(img)
 
     def prepare_img(self, img_str: str) -> np.ndarray:
         img_str = img_str.split(",")[1]
@@ -37,37 +41,37 @@ class OCRWebUtils:
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         return image
 
-    def get_web_result(
-        self, img: np.ndarray, ocr_res: List, elapse: List
-    ) -> Tuple[Union[str, List, str, str]]:
-        if ocr_res is None:
-            total_elapse, elapse_part = 0, ""
-            img_str = self.img_to_base64(img)
-            rec_res = json.dumps([], indent=2, ensure_ascii=False)
-            boxes = ""
-        else:
-            boxes, txts, scores = list(zip(*ocr_res))
-            scores = [f"{v:.4f}" for v in scores]
-            rec_res = list(zip(range(len(txts)), txts, scores))
-            rec_res = json.dumps(rec_res, indent=2, ensure_ascii=False)
+    def get_ocr_res(self, img: np.ndarray) -> str:
+        ocr_res = self.ocr(img)
+        if ocr_res.txts is None:
+            result = OCRWebOutput(
+                image="",
+                total_elapse="0",
+                elapse_part="",
+                rec_res="",
+            )
+            return json.dumps(asdict(result))
 
-            det_im = self.draw_text_det_res(np.array(boxes), img)
-            img_str = self.img_to_base64(det_im)
+        boxes, txts, scores = ocr_res.boxes, ocr_res.txts, ocr_res.scores
+        scores = [f"{v:.4f}" for v in scores]
+        rec_res = list(zip(range(len(txts)), txts, scores))
+        rec_res = json.dumps(rec_res, indent=2, ensure_ascii=False)
 
-            total_elapse = reduce(lambda x, y: float(x) + float(y), elapse)
-            elapse_part = ",".join([f"{x:.4f}" for x in elapse])
+        det_im = self.draw_text_det_res(np.array(boxes), img)
+        img_str = self.img_to_base64(det_im)
 
-        web_return = self.WebReturn(
+        elapse_part = ",".join([f"{x:.4f}" for x in ocr_res.elapse_list])
+
+        web_return = OCRWebOutput(
             image=img_str,
-            total_elapse=f"{total_elapse:.4f}",
+            total_elapse=f"{ocr_res.elapse:.4f}",
             elapse_part=elapse_part,
             rec_res=rec_res,
-            det_boxes=boxes,
         )
-        return json.dumps(web_return._asdict())
+        return json.dumps(asdict(web_return))
 
     @staticmethod
-    def img_to_base64(img) -> str:
+    def img_to_base64(img: np.ndarray) -> str:
         img = cv2.imencode(".png", img)[1]
         img_str = str(base64.b64encode(img))[2:-1]
         return img_str

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RapidOCR - 智能文字识别</title>
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-    <link rel="shortcut icon" href="/static/css/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/static/css/favicon.ico" type="image/x-icon" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <!-- 头部区域 -->
@@ -23,7 +25,8 @@
                         <i class="fab fa-github"></i>
                         Star项目
                     </a>
-                    <a href="https://rapidai.github.io/RapidOCRDocs/main/install_usage/rapidocr_web/usage/" class="docs-link" target="_blank">
+                    <a href="https://rapidai.github.io/RapidOCRDocs/main/install_usage/rapidocr_web/usage/"
+                        class="docs-link" target="_blank">
                         <i class="fas fa-book"></i>
                         使用文档
                     </a>
@@ -44,7 +47,7 @@
                         <i class="fas fa-plus"></i>
                         选择图片
                     </button>
-                    <input type="file" style="display: none;" name="pic" id="rapid_ocr" accept="image/*"/>
+                    <input type="file" style="display: none;" name="pic" id="rapid_ocr" accept="image/*" />
                 </div>
             </div>
         </section>
@@ -67,7 +70,7 @@
                                 <p>正在识别中...</p>
                             </div>
                         </div>
-                        <img id="detect_img" src="" alt="检测结果"/>
+                        <img id="detect_img" src="" alt="检测结果" />
                         <div class="zoom-hint">
                             <i class="fas fa-search-plus"></i> 点击或滚轮缩放，拖拽移动图片
                         </div>
@@ -123,7 +126,7 @@
                                     <div class="stat-value" id="recTime">0.000s</div>
                                 </div>
                             </div>
-                                   </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,7 +138,7 @@
     <script type="text/javascript">
         // 页面加载时，执行
         var targetFile = null;
-                        window.onload = function () {
+        window.onload = function () {
             // 移除图片的宽高属性，让CSS控制
             $('#detect_img').removeAttr("width").removeAttr("height");
 
@@ -146,7 +149,7 @@
             $('#copyAllBtn').hide();
 
             // 绑定复制按钮事件
-            $('#copyAllBtn').on('click', function() {
+            $('#copyAllBtn').on('click', function () {
                 copyAllResults();
             });
 
@@ -154,25 +157,25 @@
             window.copyAllResults = copyAllResults;
         }
 
-        $("#rapid_ocr").on('change', function (){
+        $("#rapid_ocr").on('change', function () {
             targetFile = document.getElementById("rapid_ocr").files[0];
             requestOCR();
         });
 
         // 拖拽上传
-        $("html").on("dragover", function(event) {
+        $("html").on("dragover", function (event) {
             event.preventDefault();
             event.stopPropagation();
             $(this).addClass('dragging');
         });
 
-        $("html").on("dragleave", function(event) {
+        $("html").on("dragleave", function (event) {
             event.preventDefault();
             event.stopPropagation();
             $(this).removeClass('dragging');
         });
 
-        $("html").on("drop", function(event) {
+        $("html").on("drop", function (event) {
             event.preventDefault();
             event.stopPropagation();
             let trans = event.originalEvent.dataTransfer;
@@ -205,8 +208,8 @@
             }
         }
 
-        function requestOCR(){
-            if (!targetFile){
+        function requestOCR() {
+            if (!targetFile) {
                 return;
             }
 
@@ -215,7 +218,7 @@
             let index = imageName.lastIndexOf('.');
             let extName = imageName.substr(index + 1);
             let imgArr = ['webp', 'jpg', 'bmp', 'png', 'jpeg'];
-            if (!(imgArr.includes(extName.toLocaleLowerCase()))){
+            if (!(imgArr.includes(extName.toLocaleLowerCase()))) {
                 showNotification("图像文件格式不支持！", "error");
                 return;
             }
@@ -228,16 +231,16 @@
             }
 
             var reader = new FileReader();
-            reader.onload = function(e){
-                var upload_data = {"file": reader.result};
+            reader.onload = function (e) {
+                var upload_data = { "file": reader.result };
                 $.ajax({
-                    url:"/ocr",
-                    type:"POST",
+                    url: "/ocr",
+                    type: "POST",
                     data: JSON.stringify(upload_data),
                     contentType: 'application/json; charset=UTF-8',
                     dataType: 'json',
 
-                                        beforeSend:function(){
+                    beforeSend: function () {
                         // 显示结果区域和加载状态
                         $("#resultsSection").show();
                         $("#loadingOverlay").show();
@@ -253,7 +256,7 @@
                         $('#detect_img').show();
 
                         // 添加图片加载完成后的处理
-                        $("#detect_img").on('load', function() {
+                        $("#detect_img").on('load', function () {
                             if (typeof adjustImageSizeAdaptive === 'function') {
                                 adjustImageSizeAdaptive(this);
                             }
@@ -275,17 +278,17 @@
                         }
                     },
 
-                    success:function (data) {
+                    success: function (data) {
                         $("#loadingOverlay").hide();
 
-                        if (data){
-                            if (data['image']){
-                                $("#detect_img").attr('src', 'data:image/jpeg;base64,'+ data['image']);
+                        if (data) {
+                            if (data['image']) {
+                                $("#detect_img").attr('src', 'data:image/jpeg;base64,' + data['image']);
                                 $("#detect_img").removeAttr("width").removeAttr("height");
                                 $('#detect_img').show();
 
                                 // 添加图片加载完成后的处理
-                                $("#detect_img").on('load', function() {
+                                $("#detect_img").on('load', function () {
                                     if (typeof adjustImageSizeAdaptive === 'function') {
                                         adjustImageSizeAdaptive(this);
                                     }
@@ -296,7 +299,7 @@
                                 });
                             }
 
-                            if (data["total_elapse"]){
+                            if (data["total_elapse"]) {
                                 // 更新总耗时显示
                                 var recTimeElement = document.getElementById("rec_time");
                                 if (recTimeElement) {
@@ -305,12 +308,12 @@
                                 }
                             }
 
-                            if (data["rec_res"]){
+                            if (data["rec_res"]) {
                                 var rec_res = JSON.parse(data["rec_res"]);
 
-                                if (data['elapse_part']){
+                                if (data['elapse_part']) {
                                     var elapse_list = data['elapse_part'].split(',');
-                                }else{
+                                } else {
                                     var elapse_list = [0, 0, 0];
                                 }
 
@@ -331,7 +334,7 @@
 
                                     // 根据置信度设置颜色
                                     let confidenceClass = score > 0.8 ? 'high-confidence' :
-                                                        score > 0.6 ? 'medium-confidence' : 'low-confidence';
+                                        score > 0.6 ? 'medium-confidence' : 'low-confidence';
 
                                     tableData += "<tr>"
                                     tableData += "<td class='row-number'>" + num + "</td>";
@@ -358,7 +361,7 @@
                         }
                     },
 
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         $("#loadingOverlay").hide();
                         showNotification("识别失败，请重试", "error");
                     }
@@ -367,7 +370,7 @@
             reader.readAsDataURL(targetFile)
         }
 
-                        // 调整图像尺寸，保持宽高比 - 使用新的自适应函数
+        // 调整图像尺寸，保持宽高比 - 使用新的自适应函数
         function adjustImageSize(imgElement) {
             if (typeof adjustImageSizeAdaptive === 'function') {
                 adjustImageSizeAdaptive(imgElement);
@@ -389,7 +392,7 @@
             }
         }
 
-                // 显示图片信息
+        // 显示图片信息
         function showImageInfo(imgElement) {
             const imageInfo = document.getElementById('imageInfo');
             const dimensionsSpan = imageInfo.querySelector('.image-dimensions');
@@ -413,7 +416,7 @@
             }
         }
 
-                // 更新性能统计信息
+        // 更新性能统计信息
         function updatePerformanceStats(elapseList, totalElapse) {
             const detTime = parseFloat(elapseList[0]);
             const clsTime = parseFloat(elapseList[1]);
@@ -435,13 +438,13 @@
             $("#statsContainer").css('opacity', '0').css('transform', 'translateY(20px)');
             setTimeout(() => {
                 $("#statsContainer").css('transition', 'opacity 0.6s ease, transform 0.6s ease')
-                                  .css('opacity', '1').css('transform', 'translateY(0)');
+                    .css('opacity', '1').css('transform', 'translateY(0)');
             }, 200);
         }
 
 
 
-                // 复制所有识别结果
+        // 复制所有识别结果
         function copyAllResults() {
             console.log('copyAllResults function called');
 
@@ -575,4 +578,5 @@
         }
     </script>
 </body>
+
 </html>
