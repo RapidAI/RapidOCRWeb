@@ -36,7 +36,7 @@ jobs:
     needs: create_release
     strategy:
         matrix:
-            os: ['windows-2022', 'windows-2019']
+            os: ['windows-2022']
 
     steps:
       - name: Pull latest code
@@ -97,7 +97,7 @@ jobs:
     needs: create_release
     strategy:
         matrix:
-            os: ['ubuntu-20.04', 'ubuntu-22.04']
+            os: ['ubuntu-22.04']
 
     steps:
       - name: Pull latest code
