@@ -20,8 +20,10 @@ jobs:
 
       - name: Run setup.py
         run: |
+          pip install --upgrade pip
           pip install -r requirements.txt
-          pip install get_pypi_latest_version
+          pip install get_pypi_latest_version wheel
+          pip install --upgrade setuptools
 
           python -m pip install --upgrade pip
           python setup.py bdist_wheel "${{ github.ref_name }}"
