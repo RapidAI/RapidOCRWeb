@@ -42,10 +42,6 @@ rapidocr_web -ip 0.0.0.0 -p 9003
 >
 > 浏览器打开的网址是`http`的，不是`https`。
 
-<div align="center">
-            <img src="https://github.com/RapidAI/RapidOCR/releases/download/v1.1.0/rapidocr_web_demo.gif" width="100%" height="100%">
-</div>
-
 ### 📚 文档
 
-完整文档请移步：[docs](https://rapidai.github.io/RapidOCRDocs/main/install_usage/rapidocr_api/usage/)
+完整文档请移步：[docs](https://rapidai.github.io/RapidOCRDocs/main/install_usage/rapidocr_web/usage/)
