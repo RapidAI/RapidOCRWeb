@@ -9,7 +9,7 @@ from get_pypi_latest_version import GetPyPiLatestVersion
 
 
 def get_readme():
-    root_dir = Path(__file__).resolve().parent.parent
+    root_dir = Path(__file__).resolve().parent
     readme_path = str(root_dir / "docs" / "doc_whl_rapidocr_web.md")
     with open(readme_path, "r", encoding="utf-8") as f:
         readme = f.read()
