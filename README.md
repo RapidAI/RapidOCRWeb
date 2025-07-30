@@ -1,7 +1,10 @@
 <div align="center">
-  <div align="center">
-    <img src="https://github.com/RapidAI/RapidOCRWeb/releases/download/v0.0.0/RapidOCRWeb_LOGO.png"/>
-  </div>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/RapidAI/RapidOCRWeb/releases/download/v0.0.0/RapidOCR_Web_LOGO_white_font.png"  width="55%" height="55%">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/RapidAI/RapidOCRWeb/releases/download/v0.0.0/RapidOCRWeb_LOGO.png"  width="55%" height="55%">
+    <img alt="Shows an illustrated sun in light mode and a moon with stars in dark mode." src="https://github.com/RapidAI/RapidOCRWeb/releases/download/v0.0.0/RapidOCRWeb_LOGO.png">
+  </picture>
+
  <br/>
   <a href=""><img src="https://img.shields.io/badge/Python->=3.6-aff.svg"></a>
   <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Win%2C%20Mac-pink.svg"></a>
