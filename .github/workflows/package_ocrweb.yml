@@ -26,7 +26,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: v${{ github.ref_name }}
+          automatic_release_tag: Release ${{ github.ref_name }}
           prerelease: false
           draft: true
 
@@ -63,7 +63,7 @@ jobs:
         run: |
           cd ${{ env.rapidocr_web_dir }}
           pyinstaller ocrweb.spec
-          cp -r static templates dist/${{ env.package_name }}
+          cp -r static templates dist/${{ env.package_name }}/_internal
           rm dist/${{ env.package_name }}/cv2/opencv_videoio_ffmpe*.dll || echo "未找到opencv_videoio_ffmpeg"
           echo "VERSION=$(get_pypi_latest_version rapid_videocr)" >> $GITHUB_OUTPUT
 
