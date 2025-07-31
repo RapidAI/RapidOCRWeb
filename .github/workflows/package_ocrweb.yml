@@ -53,7 +53,7 @@ jobs:
 
       - name: Install environments
         run: |
-          pip3 install get_pypi_latest_version
+          pip3 install get_pypi_latest_version pyinstaller
           pip3 install -r requirements.txt
           rapidocr check
 
