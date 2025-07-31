@@ -26,7 +26,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: Draft-${{ steps.get_cur_time.outputs.formattedTime }}
+          automatic_release_tag: v${{ github.ref_name }}
           prerelease: false
           draft: true
 
