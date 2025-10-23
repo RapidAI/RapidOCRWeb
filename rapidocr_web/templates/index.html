@@ -42,7 +42,14 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <h3 class="upload-title">粘贴剪贴板图像、拖拽图片或点击上传</h3>
-                    <p class="upload-subtitle">支持 PNG、JPG、JPEG、BMP、WEBP 格式，文件大小不超过 3MB</p>
+                    <p class="upload-subtitle">
+                                            支持 PNG、JPG、JPEG、BMP、WEBP 格式，
+                                            {% if max_upload_mb and max_upload_mb > 0 %}
+                                            文件大小不超过 {{ max_upload_mb }}MB
+                                            {% else %}
+                                            文件大小不限制
+                                            {% endif %}
+                                        </p>
                     <button class="upload-btn" onclick="document.getElementById('rapid_ocr').click();">
                         <i class="fas fa-plus"></i>
                         选择图片
@@ -136,6 +143,7 @@
     <script src="{{url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/app.js')}}"></script>
     <script type="text/javascript">
+        window.MAX_UPLOAD_MB = {{ max_upload_mb }};
         // 页面加载时，执行
         var targetFile = null;
         window.onload = function () {
@@ -225,8 +233,8 @@
 
             // 判断图像大小是否符合
             let imageSize = targetFile.size / 1024 / 1024;
-            if (imageSize >= 3) {
-                showNotification("图像大小超过3MB！", "error");
+            if (window.MAX_UPLOAD_MB && window.MAX_UPLOAD_MB > 0 && imageSize >= window.MAX_UPLOAD_MB) {
+                showNotification(`图像大小超过${window.MAX_UPLOAD_MB}MB！`, "error");
                 return;
             }
 
