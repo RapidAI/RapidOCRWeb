@@ -8,7 +8,7 @@
   <br/>
   <a href=""><img src="https://img.shields.io/badge/Python->=3.6-aff.svg"></a>
   <a href=""><img src="https://img.shields.io/badge/OS-Linux%2C%20Win%2C%20Mac-pink.svg"></a>
-  <a href="https://pepy.tech/project/rapidocr_web"><img src="https://static.pepy.tech/personalized-badge/rapidocr_web?period=total&units=abbreviation&left_color=grey&right_color=blue&left_text=Downloads"></a>
+  <a href="https://pypistats.org/packages/rapidocr_web"><img src="https://img.shields.io/pypi/dm/rapidocr_web?style=flat&label=rapidocr_web"></a>
   <a href="https://pypi.org/project/rapidocr_api/"><img alt="PyPI" src="https://img.shields.io/pypi/v/rapidocr_api"></a>
   <a href="https://choosealicense.com/licenses/apache-2.0/"><img src="https://img.shields.io/badge/License-Apache%202-dfd.svg"></a>
   <a href="https://semver.org/"><img alt="SemVer2.0" src="https://img.shields.io/badge/SemVer-2.0-brightgreen"></a>
